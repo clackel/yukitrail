@@ -30,25 +30,35 @@ import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
+<<<<<<< HEAD
 /**
  * JWT、RSA 密钥和密码编码器配置。
  *
  * <p>本地未提供密钥时生成临时密钥；部署环境可通过开关强制要求固定密钥。</p>
  */
+=======
+>>>>>>> 407e499645ce58ce24342b295addb82bf5271147
 @Configuration
 @EnableConfigurationProperties(AuthProperties.class)
 public class JwtConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(JwtConfiguration.class);
 
+<<<<<<< HEAD
     /** 读取部署密钥，或在本地开发模式下生成进程级临时密钥。 */
+=======
+>>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     @Bean
     RsaKeyPair rsaKeyPair(AuthProperties properties) {
         boolean hasPrivateKey = hasText(properties.getPrivateKey());
         boolean hasPublicKey = hasText(properties.getPublicKey());
 
         if (hasPrivateKey != hasPublicKey) {
+<<<<<<< HEAD
             throw new IllegalStateException("JWT_PRIVATE_KEY 与 JWT_PUBLIC_KEY 必须同时配置");
+=======
+            throw new IllegalStateException("JWT_PRIVATE_KEY and JWT_PUBLIC_KEY must be configured together");
+>>>>>>> 407e499645ce58ce24342b295addb82bf5271147
         }
 
         if (hasPrivateKey) {
@@ -56,10 +66,17 @@ public class JwtConfiguration {
         }
 
         if (properties.isKeysRequired()) {
+<<<<<<< HEAD
             throw new IllegalStateException("当前环境要求固定 JWT 密钥，但尚未完成配置");
         }
 
         log.warn("未配置 JWT 密钥，正在为本地开发生成内存临时 RSA 密钥；应用重启后旧访问令牌将失效");
+=======
+            throw new IllegalStateException("JWT keys are required but were not configured");
+        }
+
+        log.warn("JWT keys are not configured; generating an ephemeral RSA key pair for local development");
+>>>>>>> 407e499645ce58ce24342b295addb82bf5271147
         return generateKeyPair();
     }
 
@@ -71,7 +88,10 @@ public class JwtConfiguration {
         return new NimbusJwtEncoder(new ImmutableJWKSet<SecurityContext>(new JWKSet(rsaKey)));
     }
 
+<<<<<<< HEAD
     /** 只接受 RS256，并同时校验标准时间字段和配置的签发者。 */
+=======
+>>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     @Bean
     JwtDecoder jwtDecoder(RsaKeyPair keyPair, AuthProperties properties) {
         NimbusJwtDecoder decoder = NimbusJwtDecoder.withPublicKey(keyPair.publicKey())
@@ -102,7 +122,11 @@ public class JwtConfiguration {
             );
             return new RsaKeyPair(decodedPublicKey, decodedPrivateKey);
         } catch (Exception exception) {
+<<<<<<< HEAD
             throw new IllegalStateException("配置的 JWT 密钥不是有效的 RSA 密钥", exception);
+=======
+            throw new IllegalStateException("Configured JWT keys are not valid RSA keys", exception);
+>>>>>>> 407e499645ce58ce24342b295addb82bf5271147
         }
     }
 
@@ -116,7 +140,11 @@ public class JwtConfiguration {
                     (RSAPrivateKey) keyPair.getPrivate()
             );
         } catch (NoSuchAlgorithmException exception) {
+<<<<<<< HEAD
             throw new IllegalStateException("当前 Java 运行环境不支持 RSA 算法", exception);
+=======
+            throw new IllegalStateException("RSA is not available", exception);
+>>>>>>> 407e499645ce58ce24342b295addb82bf5271147
         }
     }
 

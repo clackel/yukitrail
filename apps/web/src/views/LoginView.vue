@@ -44,7 +44,10 @@ const submit = async () => {
   submitting.value = true
   try {
     await auth.login({ email: form.email.trim(), password: form.password })
+<<<<<<< HEAD
     // 仅接受站内绝对路径，避免把登录成功用户跳转到外部站点。
+=======
+>>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     const redirect = typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/')
       ? route.query.redirect
       : '/'

@@ -7,7 +7,10 @@ export interface PresentedApiError {
   fields: Record<string, string>
 }
 
+<<<<<<< HEAD
 /** 将后端统一错误结构转换为表单可直接展示的数据。 */
+=======
+>>>>>>> 407e499645ce58ce24342b295addb82bf5271147
 export const presentApiError = (error: unknown): PresentedApiError => {
   if (axios.isAxiosError<ApiEnvelope<ValidationErrorData | null>>(error) && error.response?.data) {
     return {

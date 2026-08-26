@@ -74,7 +74,11 @@ public class SecurityConfiguration {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             objectMapper.writeValue(
                     response.getOutputStream(),
+<<<<<<< HEAD
                     ApiResponse.error("FORBIDDEN", "无权访问该资源", request)
+=======
+                    ApiResponse.error("FORBIDDEN", "Access is denied", request)
+>>>>>>> 407e499645ce58ce24342b295addb82bf5271147
             );
         };
     }
