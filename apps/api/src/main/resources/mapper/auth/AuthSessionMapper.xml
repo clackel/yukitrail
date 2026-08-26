@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.yukitrail.api.auth.mapper.AuthSessionMapper">
+
+    <resultMap id="authSessionMap" type="dev.yukitrail.api.auth.model.AuthSession">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="refreshTokenHash" column="refresh_token_hash"/>
+        <result property="expiresAt" column="expires_at"/>
+        <result property="revokedAt" column="revoked_at"/>
+        <result property="lastUsedAt" column="last_used_at"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="findByTokenHashForUpdate" resultMap="authSessionMap">
+        SELECT id, user_id, refresh_token_hash, expires_at, revoked_at, last_used_at, created_at
+        FROM auth_sessions
+        WHERE refresh_token_hash = #{refreshTokenHash}
+        FOR UPDATE
+    </select>
+
+    <insert id="insert" parameterType="dev.yukitrail.api.auth.model.AuthSession">
+        INSERT INTO auth_sessions (
+            id,
+            user_id,
+            refresh_token_hash,
+            expires_at
+        )
+        VALUES (
+            #{id},
+            #{userId},
+            #{refreshTokenHash},
+            #{expiresAt}
+        )
+    </insert>
+
+    <update id="revokeIfActive">
+        UPDATE auth_sessions
+        SET revoked_at = #{revokedAt},
+            last_used_at = #{lastUsedAt}
+        WHERE id = #{id}
+          AND revoked_at IS NULL
+    </update>
+
+</mapper>

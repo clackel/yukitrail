@@ -34,6 +34,8 @@ Copy-Item apps/web/.env.example apps/web/.env.local
 
 不要把真实数据库密码或高德地图密钥提交到 Git。
 
+API 环境变量示例位于 `apps/api/.env.example`。该文件只是配置清单，Spring Boot 不会自动读取 `.env`；请把需要覆盖的值配置到当前 PowerShell 或 IDE 的运行配置中。
+
 ## 2. 启动 MySQL
 
 两种方式只选择一种。推荐方式 A，它能保证 MySQL 版本与项目计划一致。
@@ -117,6 +119,20 @@ $env:DB_PASSWORD = '替换为你的本地应用密码'
 npm run api:dev
 ```
 
+本地开发可以不配置 RSA 密钥。此时 API 启动时会生成一对内存临时密钥：访问令牌有效期为 15 分钟，API 重启后旧访问令牌会失效，但未过期的刷新会话仍可通过 Cookie 重新签发访问令牌。
+
+部署环境必须提供固定密钥，并启用安全 Cookie：
+
+```text
+JWT_KEYS_REQUIRED=true
+JWT_PRIVATE_KEY=<Base64 编码的 PKCS#8 RSA 私钥 DER>
+JWT_PUBLIC_KEY=<Base64 编码的 X.509 RSA 公钥 DER>
+JWT_ISSUER=https://你的-api-域名
+AUTH_COOKIE_SECURE=true
+```
+
+刷新 Cookie 名为 `yukitrail_refresh`，具有 `HttpOnly`、`SameSite=Lax`、路径 `/api/v1/auth` 和 30 天有效期。前端只在 Pinia 内存中保存访问令牌，不写入 `localStorage` 或 `sessionStorage`。
+
 首次成功连接数据库时，Flyway 会自动执行 `apps/api/src/main/resources/db/migration` 下的迁移。目前会创建五张业务表：
 
 - `users`
@@ -134,6 +150,30 @@ Invoke-RestMethod http://localhost:8080/api/v1/health
 ```
 
 返回内容中的 `code` 应为 `OK`，`data.status` 应为 `UP`。
+
+也可以用一个临时邮箱验证完整认证链路。下面的 `$session` 会自动保存 `HttpOnly` Cookie：
+
+```powershell
+$email = "smoke-$([DateTimeOffset]::UtcNow.ToUnixTimeSeconds())@example.com"
+$session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+$registerBody = @{
+  email = $email
+  password = 'local-smoke-password'
+  nickname = '本地测试'
+} | ConvertTo-Json
+
+$auth = Invoke-RestMethod `
+  -Uri http://localhost:8080/api/v1/auth/register `
+  -Method Post `
+  -ContentType 'application/json' `
+  -Body $registerBody `
+  -WebSession $session
+
+$headers = @{ Authorization = "Bearer $($auth.data.accessToken)" }
+Invoke-RestMethod http://localhost:8080/api/v1/auth/me -Headers $headers
+Invoke-RestMethod http://localhost:8080/api/v1/auth/refresh -Method Post -WebSession $session
+Invoke-RestMethod http://localhost:8080/api/v1/auth/logout -Method Post -WebSession $session
+```
 
 ## 4. 启动 Web
 
@@ -178,10 +218,11 @@ ORDER BY installed_rank;
 
 ```powershell
 npm run web:check
+npm run web:e2e
 npm run api:test
 ```
 
-`web:check` 会执行前端单元测试、类型检查和生产构建。`api:test` 会执行后端测试；其中真实 MySQL 集成测试依赖可用的 Docker 环境。
+`web:check` 会执行前端类型检查、Vitest 和生产构建；`web:e2e` 会启动预览服务器并使用 Chromium 执行关键认证流程。`api:test` 会执行后端测试，其中 MySQL 8.4 Testcontainers 集成测试依赖可用的 Docker 环境；日志显示 `Skipped` 时只能说明被跳过，不能视为集成验证通过。
 
 ## 7. 停止项目
 
@@ -202,3 +243,5 @@ docker compose --env-file infra/.env -f infra/compose.yml down
 - `5173` 被占用：Vite 会提示替代端口，但 API 的 CORS 默认只允许 `5173`；建议先停止占用进程。
 - API 报数据库连接失败：确认 MySQL 已启动、应用账号可登录，并检查 `DB_HOST`、`DB_PORT`、`DB_NAME`、`DB_USERNAME`、`DB_PASSWORD`。
 - 页面能打开但健康检查失败：先直接访问 `http://localhost:8080/api/v1/health`，确认 API 正常后再检查 Vite 代理。
+- IDEA 和 VS Code 调试时只运行一个 `8080` 后端实例。可用 `Get-NetTCPConnection -LocalPort 8080 -State Listen` 查看监听进程，再用返回的 `OwningProcess` 查找对应 Java 进程；不要同时保留终端启动、IDEA Run 和 VS Code Debug 三份 API。
+- API 每次重启后页面回到登录页：本地临时 RSA 密钥会变化，这是预期行为；刷新 Cookie 有效时重新打开页面会自动恢复会话。若刷新也失败，请检查 Cookie 路径、浏览器站点和 API 日志。

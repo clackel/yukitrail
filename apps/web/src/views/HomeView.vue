@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { apiClient } from '@/services/apiClient'
+import { useAuthStore } from '@/stores/auth'
 import type { ApiEnvelope, HealthData } from '@/types/api'
 
 type ApiState = 'checking' | 'ready' | 'unavailable'
 
 const apiState = ref<ApiState>('checking')
+const auth = useAuthStore()
+const router = useRouter()
 
 const statusLabel = computed(() => {
   if (apiState.value === 'ready') return 'API 已连接'
@@ -25,6 +29,11 @@ const checkApi = async () => {
   }
 }
 
+const logout = async () => {
+  await auth.logout()
+  await router.replace('/login')
+}
+
 onMounted(checkApi)
 </script>
 
@@ -35,7 +44,13 @@ onMounted(checkApi)
         <span class="brand-mark" aria-hidden="true">Y</span>
         <span>YukiTrail</span>
       </a>
-      <div class="stage-pill">MVP · 工程初始化</div>
+      <div class="user-menu">
+        <span>
+          <strong>{{ auth.user?.nickname }}</strong>
+          <small>{{ auth.user?.email }}</small>
+        </span>
+        <button type="button" @click="logout">退出</button>
+      </div>
     </nav>
 
     <section class="hero">

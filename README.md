@@ -4,7 +4,7 @@
 
 YukiTrail 是一个旅行规划与足迹分享平台。当前开发范围聚焦首版 MVP：账户、私有旅行计划、每日行程，以及高德地图辅助选点。
 
-项目现在处于工程初始化阶段。产品边界、接口约定和验收场景见 [PROJECT_PLAN.md](./PROJECT_PLAN.md)。
+项目已完成工程骨架和账户认证闭环：支持注册、登录、刷新、退出、当前用户识别和前端路由保护。产品边界、接口约定和后续验收场景见 [PROJECT_PLAN.md](./PROJECT_PLAN.md)。
 
 ## 仓库结构
 
@@ -50,12 +50,15 @@ infra/      MySQL 本地基础设施
 
 Web 默认地址为 `http://localhost:5173`，API 健康检查为 `http://localhost:8080/api/v1/health`。
 
+本地启动未配置 RSA 密钥时，API 会生成只在当前进程有效的临时密钥；重启后旧访问令牌失效，但有效刷新 Cookie 仍能换取新令牌。部署配置必须提供固定密钥，详情见启动文档。
+
 本机已有 MySQL、环境变量配置、数据库验证、停止服务和常见问题见 [完整启动流程](./docs/STARTUP.md)。
 
 ## 检查
 
 ```powershell
 npm run web:check
+npm run web:e2e
 npm run api:test
 ```
 
