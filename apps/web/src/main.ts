@@ -12,10 +12,7 @@ const app = createApp(App)
 const pinia = createPinia()
 
 app.use(pinia)
-<<<<<<< HEAD
 // 路由和请求拦截器依赖同一个 Pinia 会话实例。
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
 installAuthGuards(pinia)
 installApiInterceptors(pinia, router)
 app.use(router)

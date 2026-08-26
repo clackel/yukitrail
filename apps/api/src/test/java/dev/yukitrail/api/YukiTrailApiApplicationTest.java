@@ -121,11 +121,7 @@ class YukiTrailApiApplicationTest {
                             .content(body))
                     .andExpect(status().isUnauthorized())
                     .andExpect(jsonPath("$.code").value("INVALID_CREDENTIALS"))
-<<<<<<< HEAD
                     .andExpect(jsonPath("$.message").value("邮箱或密码错误"));
-=======
-                    .andExpect(jsonPath("$.message").value("Email or password is incorrect"));
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
         }
     }
 

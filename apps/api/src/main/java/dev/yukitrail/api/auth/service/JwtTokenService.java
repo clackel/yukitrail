@@ -13,10 +13,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD
 /** 使用 RS256 签发短期访问令牌。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
 @Service
 public class JwtTokenService {
 
@@ -30,12 +27,9 @@ public class JwtTokenService {
         this.clock = clock;
     }
 
-<<<<<<< HEAD
     /**
      * 为指定用户签发访问令牌；subject 是后续识别当前用户的唯一身份来源。
      */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     public AccessToken issue(long userId) {
         Instant issuedAt = clock.instant();
         Instant expiresAt = issuedAt.plus(properties.getAccessTokenTtl());
@@ -51,10 +45,7 @@ public class JwtTokenService {
         return new AccessToken(value, properties.getAccessTokenTtl().toSeconds());
     }
 
-<<<<<<< HEAD
     /** JWT 字符串及其剩余有效秒数。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     public record AccessToken(String value, long expiresIn) {
     }
 }

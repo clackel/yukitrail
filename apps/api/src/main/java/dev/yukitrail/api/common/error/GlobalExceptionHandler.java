@@ -16,10 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-<<<<<<< HEAD
 /** 将校验、业务和未知异常转换为统一 API 响应，避免向前端暴露内部堆栈。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -46,11 +43,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(ApiResponse.error(
                 "VALIDATION_ERROR",
-<<<<<<< HEAD
                 "请求参数校验失败",
-=======
-                "Request validation failed",
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
                 new ValidationErrorData(fields),
                 request
         ));
@@ -63,11 +56,7 @@ public class GlobalExceptionHandler {
     ) {
         return ResponseEntity.badRequest().body(ApiResponse.error(
                 "VALIDATION_ERROR",
-<<<<<<< HEAD
                 "请求体格式不正确",
-=======
-                "Request body is invalid",
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
                 request
         ));
     }
@@ -77,17 +66,10 @@ public class GlobalExceptionHandler {
             Exception exception,
             HttpServletRequest request
     ) {
-<<<<<<< HEAD
         log.error("发生未处理的 API 异常；traceId={}", TraceIdFilter.getTraceId(request), exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(
                 "INTERNAL_ERROR",
                 "服务器暂时无法处理请求，请稍后重试",
-=======
-        log.error("Unhandled API error; traceId={}", TraceIdFilter.getTraceId(request), exception);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(
-                "INTERNAL_ERROR",
-                "An unexpected error occurred",
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
                 request
         ));
     }

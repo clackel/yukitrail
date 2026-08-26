@@ -9,15 +9,9 @@ import dev.yukitrail.api.auth.error.InvalidRefreshSessionException;
 import dev.yukitrail.api.auth.service.AuthService;
 import dev.yukitrail.api.auth.service.AuthService.IssuedAuthSession;
 import dev.yukitrail.api.common.api.ApiResponse;
-<<<<<<< HEAD
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-=======
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Cookie;
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
@@ -31,14 +25,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-<<<<<<< HEAD
 /**
  * 账户认证接口。
  *
  * <p>访问令牌通过响应体返回，刷新令牌只通过 HttpOnly Cookie 传递，避免前端脚本读取。</p>
  */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -51,10 +42,7 @@ public class AuthController {
         this.properties = properties;
     }
 
-<<<<<<< HEAD
     /** 注册账户并立即创建登录会话。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(
             @Valid @RequestBody RegisterRequest body,
@@ -67,10 +55,7 @@ public class AuthController {
                 .body(ApiResponse.ok(session.response(), request));
     }
 
-<<<<<<< HEAD
     /** 校验邮箱和密码，成功后签发访问令牌和刷新 Cookie。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     @PostMapping("/login")
     public ApiResponse<AuthResponse> login(
             @Valid @RequestBody LoginRequest body,
@@ -82,10 +67,7 @@ public class AuthController {
         return ApiResponse.ok(session.response(), request);
     }
 
-<<<<<<< HEAD
     /** 轮换刷新会话；旧令牌从本次请求成功后立即失效。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     @PostMapping("/refresh")
     public ApiResponse<AuthResponse> refresh(
             HttpServletRequest request,
@@ -96,19 +78,13 @@ public class AuthController {
             writeRefreshCookie(response, session.refreshToken());
             return ApiResponse.ok(session.response(), request);
         } catch (InvalidRefreshSessionException exception) {
-<<<<<<< HEAD
             // 无效 Cookie 也要主动清除，避免浏览器在后续请求中反复携带。
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
             clearRefreshCookie(response);
             throw exception;
         }
     }
 
-<<<<<<< HEAD
     /** 幂等退出：无 Cookie 或会话已撤销时也返回成功。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     @PostMapping("/logout")
     public ApiResponse<Void> logout(
             HttpServletRequest request,
@@ -119,20 +95,14 @@ public class AuthController {
         return ApiResponse.ok(null, request);
     }
 
-<<<<<<< HEAD
     /** 根据 Spring Security 已验证的 JWT subject 查询当前用户。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     @GetMapping("/me")
     public ApiResponse<UserResponse> me(Authentication authentication, HttpServletRequest request) {
         return ApiResponse.ok(authService.currentUser(authentication.getName()), request);
     }
 
     private void writeRefreshCookie(HttpServletResponse response, String refreshToken) {
-<<<<<<< HEAD
         // Cookie 只允许认证接口携带，减少刷新令牌暴露给其他请求的范围。
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
         ResponseCookie cookie = ResponseCookie.from(properties.getCookieName(), refreshToken)
                 .httpOnly(true)
                 .secure(properties.isCookieSecure())

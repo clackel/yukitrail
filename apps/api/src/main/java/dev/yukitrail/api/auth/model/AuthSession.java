@@ -2,18 +2,12 @@ package dev.yukitrail.api.auth.model;
 
 import java.time.LocalDateTime;
 
-<<<<<<< HEAD
 /** 与 auth_sessions 表对应的可轮换、可撤销刷新会话。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
 public class AuthSession {
 
     private String id;
     private Long userId;
-<<<<<<< HEAD
     /** 原始刷新令牌的 SHA-256 摘要。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     private String refreshTokenHash;
     private LocalDateTime expiresAt;
     private LocalDateTime revokedAt;

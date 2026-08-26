@@ -14,10 +14,7 @@
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
-<<<<<<< HEAD
     <!-- 行锁保证同一个刷新令牌在并发请求中只能成功轮换一次。 -->
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     <select id="findByTokenHashForUpdate" resultMap="authSessionMap">
         SELECT id, user_id, refresh_token_hash, expires_at, revoked_at, last_used_at, created_at
         FROM auth_sessions
@@ -40,10 +37,7 @@
         )
     </insert>
 
-<<<<<<< HEAD
     <!-- 条件更新让重复撤销保持幂等，并为并发竞争提供明确返回值。 -->
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
     <update id="revokeIfActive">
         UPDATE auth_sessions
         SET revoked_at = #{revokedAt},

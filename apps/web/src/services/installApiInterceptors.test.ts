@@ -12,11 +12,7 @@ type RetriableConfig = InternalAxiosRequestConfig & { _retry?: boolean }
 
 const session: ApiEnvelope<AuthSessionData> = {
   code: 'OK',
-<<<<<<< HEAD
   message: '请求成功',
-=======
-  message: 'success',
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
   data: {
     accessToken: 'fresh-access-token',
     tokenType: 'Bearer',

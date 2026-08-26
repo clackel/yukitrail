@@ -2,9 +2,6 @@ package dev.yukitrail.api.common.error;
 
 import java.util.Map;
 
-<<<<<<< HEAD
 /** 字段级校验错误，键名与请求 JSON 字段保持一致。 */
-=======
->>>>>>> 407e499645ce58ce24342b295addb82bf5271147
 public record ValidationErrorData(Map<String, String> fields) {
 }
