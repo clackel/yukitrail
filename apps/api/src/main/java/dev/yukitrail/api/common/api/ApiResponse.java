@@ -20,5 +20,13 @@ public record ApiResponse<T>(
     ) {
         return new ApiResponse<>(code, message, null, TraceIdFilter.getTraceId(request));
     }
-}
 
+    public static <T> ApiResponse<T> error(
+            String code,
+            String message,
+            T data,
+            HttpServletRequest request
+    ) {
+        return new ApiResponse<>(code, message, data, TraceIdFilter.getTraceId(request));
+    }
+}
