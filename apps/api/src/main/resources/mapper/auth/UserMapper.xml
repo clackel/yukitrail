@@ -25,6 +25,7 @@
         WHERE email = #{email}
     </select>
 
+    <!-- 数据库唯一索引是并发注册时防止重复邮箱的最终保障。 -->
     <insert id="insert" parameterType="dev.yukitrail.api.auth.model.UserAccount"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO users (email, password_hash, nickname)

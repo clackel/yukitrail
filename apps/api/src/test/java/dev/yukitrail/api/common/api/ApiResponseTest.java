@@ -15,9 +15,8 @@ class ApiResponseTest {
         ApiResponse<String> response = ApiResponse.ok("ready", request);
 
         assertThat(response.code()).isEqualTo("OK");
-        assertThat(response.message()).isEqualTo("success");
+        assertThat(response.message()).isEqualTo("请求成功");
         assertThat(response.data()).isEqualTo("ready");
         assertThat(response.traceId()).isEqualTo("trace-123");
     }
 }
-

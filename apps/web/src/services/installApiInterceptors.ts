@@ -29,6 +29,7 @@ export const installApiInterceptors = (pinia: Pinia, router: Router) => {
       }
 
       request._retry = true
+      // 多个并发 401 会在 store 中共享同一个刷新任务。
       if (await auth.refresh()) {
         request.headers.Authorization = `Bearer ${auth.accessToken}`
         return apiClient.request(request)
@@ -46,6 +47,7 @@ export const installApiInterceptors = (pinia: Pinia, router: Router) => {
   )
 
   return () => {
+    // 测试和热重载场景可以主动卸载，避免重复注册拦截器。
     apiClient.interceptors.request.eject(requestInterceptor)
     apiClient.interceptors.response.eject(responseInterceptor)
   }

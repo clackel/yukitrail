@@ -8,7 +8,7 @@ const user = {
 
 const success = (data: unknown) => ({
   code: 'OK',
-  message: 'success',
+  message: '请求成功',
   data,
   traceId: 'e2e-trace-id',
 })
@@ -23,7 +23,7 @@ test('registers, restores the session after reload, and logs out', async ({ page
         contentType: 'application/json',
         body: JSON.stringify({
           code: 'INVALID_REFRESH_SESSION',
-          message: 'Refresh session is invalid or expired',
+          message: '刷新会话无效或已过期，请重新登录',
           data: null,
           traceId: 'e2e-trace-id',
         }),

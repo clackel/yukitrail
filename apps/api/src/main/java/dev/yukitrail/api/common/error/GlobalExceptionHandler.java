@@ -16,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/** 将校验、业务和未知异常转换为统一 API 响应，避免向前端暴露内部堆栈。 */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -42,7 +43,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(ApiResponse.error(
                 "VALIDATION_ERROR",
-                "Request validation failed",
+                "请求参数校验失败",
                 new ValidationErrorData(fields),
                 request
         ));
@@ -55,7 +56,7 @@ public class GlobalExceptionHandler {
     ) {
         return ResponseEntity.badRequest().body(ApiResponse.error(
                 "VALIDATION_ERROR",
-                "Request body is invalid",
+                "请求体格式不正确",
                 request
         ));
     }
@@ -65,10 +66,10 @@ public class GlobalExceptionHandler {
             Exception exception,
             HttpServletRequest request
     ) {
-        log.error("Unhandled API error; traceId={}", TraceIdFilter.getTraceId(request), exception);
+        log.error("发生未处理的 API 异常；traceId={}", TraceIdFilter.getTraceId(request), exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(
                 "INTERNAL_ERROR",
-                "An unexpected error occurred",
+                "服务器暂时无法处理请求，请稍后重试",
                 request
         ));
     }

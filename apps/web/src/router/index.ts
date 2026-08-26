@@ -32,6 +32,7 @@ const router = createRouter({
 export const installAuthGuards = (pinia: Pinia) => {
   router.beforeEach(async (to) => {
     const auth = useAuthStore(pinia)
+    // 首次导航先尝试通过 HttpOnly Cookie 恢复登录状态。
     await auth.initialize()
 
     if (to.meta.requiresAuth && !auth.isAuthenticated) {

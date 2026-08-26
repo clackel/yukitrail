@@ -90,7 +90,7 @@ class AuthControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer invalid-token"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("UNAUTHORIZED"))
-                .andExpect(jsonPath("$.message").value("Authentication is required"))
+                .andExpect(jsonPath("$.message").value("请先登录后再访问"))
                 .andExpect(jsonPath("$.traceId").isNotEmpty());
     }
 }

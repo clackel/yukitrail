@@ -4,6 +4,7 @@ import dev.yukitrail.api.auth.model.UserAccount;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+/** 用户账户的 MyBatis 数据访问接口，SQL 位于对应 XML Mapper。 */
 @Mapper
 public interface UserMapper {
 

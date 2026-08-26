@@ -2,6 +2,7 @@ package dev.yukitrail.api.common.error;
 
 import org.springframework.http.HttpStatus;
 
+/** 可安全返回给前端的业务异常，携带 HTTP 状态和稳定错误码。 */
 public class ApiException extends RuntimeException {
 
     private final HttpStatus status;

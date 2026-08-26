@@ -4,6 +4,9 @@ import java.time.Duration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * 认证相关配置，统一承接 application.yml 与部署环境变量。
+ */
 @ConfigurationProperties(prefix = "yukitrail.auth")
 public class AuthProperties {
 

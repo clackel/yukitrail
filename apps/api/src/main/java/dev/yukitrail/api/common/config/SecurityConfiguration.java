@@ -25,9 +25,15 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+/**
+ * Spring Security 安全边界。
+ *
+ * <p>认证入口公开，其他 API 使用无状态 Bearer JWT；Basic、表单登录和服务器 Session 均关闭。</p>
+ */
 @Configuration
 public class SecurityConfiguration {
 
+    /** 定义公开接口、受保护接口以及 OAuth2 Resource Server JWT 校验。 */
     @Bean
     SecurityFilterChain securityFilterChain(
             HttpSecurity http,
@@ -68,7 +74,7 @@ public class SecurityConfiguration {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             objectMapper.writeValue(
                     response.getOutputStream(),
-                    ApiResponse.error("FORBIDDEN", "Access is denied", request)
+                    ApiResponse.error("FORBIDDEN", "无权访问该资源", request)
             );
         };
     }
@@ -82,6 +88,7 @@ public class SecurityConfiguration {
         );
     }
 
+    /** 仅允许配置白名单中的前端来源携带凭据访问 API。 */
     @Bean
     CorsConfigurationSource corsConfigurationSource(
             @Value("${yukitrail.cors.allowed-origins}") List<String> allowedOrigins
@@ -112,7 +119,7 @@ public class SecurityConfiguration {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         objectMapper.writeValue(
                 response.getOutputStream(),
-                ApiResponse.error("UNAUTHORIZED", "Authentication is required", request)
+                ApiResponse.error("UNAUTHORIZED", "请先登录后再访问", request)
         );
     }
 }
