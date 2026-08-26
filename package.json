@@ -1,0 +1,29 @@
+{
+  "name": "yukitrail",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "web:dev": "npm run dev --workspace @yukitrail/web",
+    "web:build": "npm run build --workspace @yukitrail/web",
+    "web:test": "npm run test --workspace @yukitrail/web",
+    "web:e2e": "npm run test:e2e --workspace @yukitrail/web",
+    "web:check": "npm run check --workspace @yukitrail/web",
+    "api:dev": "mvn -f apps/api/pom.xml spring-boot:run",
+    "api:test": "mvn -f apps/api/pom.xml test",
+    "check": "npm run web:check && npm run api:test"
+  },
+  "engines": {
+    "node": ">=22.12.0",
+    "npm": ">=10"
+  },
+  "devDependencies": {
+    "jsdom": "28.1.0",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "typescript": "5.9.3"
+  }
+}

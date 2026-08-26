@@ -1,0 +1,26 @@
+# Environment files and secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Frontend
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.playwright-cli/
+output/playwright/
+*.tsbuildinfo
+
+# Backend
+target/
+*.log
+
+# IDE and operating system
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
