@@ -24,6 +24,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 账户与会话领域服务。
+ *
+ * <p>负责邮箱规范化、密码校验、刷新令牌轮换以及从 JWT subject 识别当前用户。</p>
+ */
 @Service
 public class AuthService {
 
@@ -34,6 +39,9 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final AuthProperties properties;
     private final Clock clock;
+    /**
+     * 用户不存在时仍执行一次等成本的密码校验，降低通过响应耗时探测账号是否存在的风险。
+     */
     private final String dummyPasswordHash;
 
     public AuthService(
@@ -55,6 +63,7 @@ public class AuthService {
         this.dummyPasswordHash = passwordEncoder.encode(UUID.randomUUID().toString());
     }
 
+    /** 注册用户，并在同一事务内创建首个刷新会话。 */
     @Transactional
     public IssuedAuthSession register(RegisterRequest request) {
         String normalizedEmail = normalizeEmail(request.email());
@@ -76,6 +85,7 @@ public class AuthService {
         return issueSession(user);
     }
 
+    /** 登录失败统一返回同一错误，不泄露邮箱是否已经注册。 */
     @Transactional
     public IssuedAuthSession login(LoginRequest request) {
         UserAccount user = userMapper.findByEmail(normalizeEmail(request.email()));
@@ -86,13 +96,18 @@ public class AuthService {
             throw new ApiException(
                     HttpStatus.UNAUTHORIZED,
                     "INVALID_CREDENTIALS",
-                    "Email or password is incorrect"
+                    "邮箱或密码错误"
             );
         }
 
         return issueSession(user);
     }
 
+    /**
+     * 轮换刷新会话。
+     *
+     * <p>Mapper 使用 {@code SELECT ... FOR UPDATE} 锁定旧会话，因此并发刷新只有一个事务能成功。</p>
+     */
     @Transactional
     public IssuedAuthSession refresh(String rawRefreshToken) {
         if (rawRefreshToken == null || rawRefreshToken.isBlank()) {
@@ -120,6 +135,7 @@ public class AuthService {
         return issueSession(user);
     }
 
+    /** 撤销当前刷新会话；重复调用或缺少令牌时保持幂等。 */
     @Transactional
     public void logout(String rawRefreshToken) {
         if (rawRefreshToken == null || rawRefreshToken.isBlank()) {
@@ -135,6 +151,7 @@ public class AuthService {
         }
     }
 
+    /** 使用已经通过签名验证的 JWT subject 查询当前用户。 */
     @Transactional(readOnly = true)
     public UserResponse currentUser(String subject) {
         long userId;
@@ -156,6 +173,7 @@ public class AuthService {
         AuthSession session = new AuthSession();
         session.setId(UUID.randomUUID().toString());
         session.setUserId(user.getId());
+        // 数据库只保存摘要；原始刷新令牌仅写入 HttpOnly Cookie。
         session.setRefreshTokenHash(refreshTokenService.hash(refreshToken));
         session.setExpiresAt(now().plus(properties.getRefreshTokenTtl()));
         authSessionMapper.insert(session);
@@ -182,7 +200,7 @@ public class AuthService {
         return new ApiException(
                 HttpStatus.CONFLICT,
                 "EMAIL_ALREADY_REGISTERED",
-                "Email is already registered"
+                "该邮箱已经注册"
         );
     }
 
@@ -190,10 +208,11 @@ public class AuthService {
         return new ApiException(
                 HttpStatus.UNAUTHORIZED,
                 "UNAUTHORIZED",
-                "Authentication is required"
+                "请先登录后再访问"
         );
     }
 
+    /** Controller 内部使用的签发结果，原始刷新令牌不会进入 JSON 响应。 */
     public record IssuedAuthSession(AuthResponse response, String refreshToken) {
     }
 }

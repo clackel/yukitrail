@@ -37,7 +37,7 @@ describe('HomeView', () => {
     vi.mocked(apiClient.get).mockResolvedValue({
       data: {
         code: 'OK',
-        message: 'success',
+        message: '请求成功',
         data: { service: 'yukitrail-api', status: 'UP' },
         traceId: 'test-trace-id',
       },

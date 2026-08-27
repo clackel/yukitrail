@@ -238,7 +238,7 @@ yukitrail/
 ```json
 {
   "code": "OK",
-  "message": "success",
+  "message": "请求成功",
   "data": {},
   "traceId": "01JYUKITRAIL00000000000000"
 }

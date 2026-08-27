@@ -38,7 +38,7 @@ class HealthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(header().exists(TraceIdFilter.TRACE_ID_HEADER))
                 .andExpect(jsonPath("$.code").value("OK"))
-                .andExpect(jsonPath("$.message").value("success"))
+                .andExpect(jsonPath("$.message").value("请求成功"))
                 .andExpect(jsonPath("$.data.service").value("yukitrail-api"))
                 .andExpect(jsonPath("$.data.status").value("UP"))
                 .andExpect(jsonPath("$.traceId").isNotEmpty());
@@ -49,7 +49,7 @@ class HealthControllerTest {
         mockMvc.perform(get("/api/v1/trips"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("UNAUTHORIZED"))
-                .andExpect(jsonPath("$.message").value("Authentication is required"))
+                .andExpect(jsonPath("$.message").value("请先登录后再访问"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.traceId").isNotEmpty());
     }

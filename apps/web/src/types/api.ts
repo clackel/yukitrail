@@ -1,3 +1,4 @@
+/** 后端统一响应结构。 */
 export interface ApiEnvelope<T> {
   code: string
   message: string

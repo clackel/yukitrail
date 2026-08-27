@@ -47,3 +47,10 @@ There are intentionally no tables for community, media, AI recommendations, noti
 `GET /api/v1/health` and the register, login, refresh and logout endpoints are public. `GET /api/v1/auth/me` and future business APIs require a Bearer JWT. Basic authentication, form login and server-side HTTP sessions are disabled.
 
 Access tokens live only in Pinia memory. The browser receives the refresh token only as an `HttpOnly`, `SameSite=Lax` Cookie scoped to `/api/v1/auth`; the database stores only its SHA-256 hash. A refresh rotates the session under a database row lock, so the same refresh token cannot succeed twice.
+
+## 注释与提示语言
+
+- 后端关键类、事务边界、安全策略和不直观的 SQL 必须使用中文注释说明“为什么这样设计”。
+- 前端只为会话、路由守卫、请求拦截器等关键流程保留简短中文注释，避免解释直观模板代码。
+- 项目自定义的前端提示、API `message`、校验信息和日志使用中文。
+- 稳定错误码、HTTP/JWT 字段、类名和变量名继续使用英文，避免破坏程序契约。

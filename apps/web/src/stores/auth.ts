@@ -15,6 +15,7 @@ interface LoginPayload {
   password: string
 }
 
+// 模块级 Promise 保证并发请求只发起一次刷新。
 let refreshPromise: Promise<boolean> | null = null
 
 export const useAuthStore = defineStore('auth', () => {
@@ -24,6 +25,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => accessToken.value !== null && user.value !== null)
 
   const applySession = (session: AuthSessionData) => {
+    // 访问令牌只保存在内存，不写入任何浏览器持久化存储。
     accessToken.value = session.accessToken
     user.value = session.user
   }
@@ -76,7 +78,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await authClient.post('/auth/logout')
     } catch {
-      // A local logout must still succeed when the API is temporarily unreachable.
+      // 即使后端暂时不可达，也要完成本地退出。
     } finally {
       clearSession()
       initialized.value = true

@@ -13,7 +13,7 @@ vi.mock('@/services/httpClients', () => ({
 
 const session: ApiEnvelope<AuthSessionData> = {
   code: 'OK',
-  message: 'success',
+  message: '请求成功',
   data: {
     accessToken: 'access-token',
     tokenType: 'Bearer',

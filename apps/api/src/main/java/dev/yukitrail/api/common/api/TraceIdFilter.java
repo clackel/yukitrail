@@ -13,6 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/** 为每个请求生成 traceId，并同时写入响应头和统一响应体。 */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class TraceIdFilter extends OncePerRequestFilter {
@@ -37,4 +38,3 @@ public class TraceIdFilter extends OncePerRequestFilter {
         return traceId instanceof String value ? value : "unknown";
     }
 }
-

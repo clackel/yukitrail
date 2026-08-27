@@ -19,6 +19,7 @@ const statusLabel = computed(() => {
 })
 
 const checkApi = async () => {
+  // 健康检查只影响状态卡片，不阻塞首页其余内容。
   apiState.value = 'checking'
 
   try {

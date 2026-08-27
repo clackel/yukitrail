@@ -55,7 +55,7 @@ class JwtConfigurationTest {
 
         assertThatThrownBy(() -> new JwtConfiguration().rsaKeyPair(properties))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("required");
+                .hasMessageContaining("要求固定 JWT 密钥");
     }
 
     @Test

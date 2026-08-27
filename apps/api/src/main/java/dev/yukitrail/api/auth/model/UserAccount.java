@@ -2,10 +2,12 @@ package dev.yukitrail.api.auth.model;
 
 import java.time.LocalDateTime;
 
+/** 与 users 表对应的内部账户模型。 */
 public class UserAccount {
 
     private Long id;
     private String email;
+    /** DelegatingPasswordEncoder 生成的密码哈希，禁止保存或输出明文密码。 */
     private String passwordHash;
     private String nickname;
     private LocalDateTime createdAt;
