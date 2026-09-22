@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 账户认证接口。
  *
- * <p>访问令牌通过响应体返回，刷新令牌只通过 HttpOnly Cookie 传递，避免前端脚本读取。</p>
+ * <p>
+ * 访问令牌通过响应体返回，刷新令牌只通过 HttpOnly Cookie 传递，避免前端脚本读取。
+ * </p>
  */
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -47,8 +49,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthResponse>> register(
             @Valid @RequestBody RegisterRequest body,
             HttpServletRequest request,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response) {
         IssuedAuthSession session = authService.register(body);
         writeRefreshCookie(response, session.refreshToken());
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -60,8 +61,7 @@ public class AuthController {
     public ApiResponse<AuthResponse> login(
             @Valid @RequestBody LoginRequest body,
             HttpServletRequest request,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response) {
         IssuedAuthSession session = authService.login(body);
         writeRefreshCookie(response, session.refreshToken());
         return ApiResponse.ok(session.response(), request);
@@ -71,8 +71,7 @@ public class AuthController {
     @PostMapping("/refresh")
     public ApiResponse<AuthResponse> refresh(
             HttpServletRequest request,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response) {
         try {
             IssuedAuthSession session = authService.refresh(findRefreshToken(request));
             writeRefreshCookie(response, session.refreshToken());
@@ -88,8 +87,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ApiResponse<Void> logout(
             HttpServletRequest request,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response) {
         authService.logout(findRefreshToken(request));
         clearRefreshCookie(response);
         return ApiResponse.ok(null, request);

@@ -43,11 +43,14 @@ describe('HomeView', () => {
       },
     })
 
-    const wrapper = mount(HomeView)
+    const wrapper = mount(HomeView, {
+      global: { stubs: { RouterLink: { template: '<a><slot /></a>' } } },
+    })
     await flushPromises()
 
     expect(wrapper.get('h1').text()).toContain('把旅程变成')
     expect(wrapper.text()).toContain('traveler@example.com')
+    expect(wrapper.text()).toContain('雪路')
     expect(wrapper.text()).toContain('API 已连接')
     expect(apiClient.get).toHaveBeenCalledWith('/health')
   })
@@ -55,7 +58,9 @@ describe('HomeView', () => {
   it('keeps the page usable when the API is unavailable', async () => {
     vi.mocked(apiClient.get).mockRejectedValue(new Error('offline'))
 
-    const wrapper = mount(HomeView)
+    const wrapper = mount(HomeView, {
+      global: { stubs: { RouterLink: { template: '<a><slot /></a>' } } },
+    })
     await flushPromises()
 
     expect(wrapper.text()).toContain('API 尚未连接')

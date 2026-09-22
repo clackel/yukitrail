@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
-import { authClient } from '@/services/httpClients'
+import { apiClient, authClient } from '@/services/httpClients'
 import type { ApiEnvelope, AuthSessionData, UserData } from '@/types/api'
 
 interface RegisterPayload {
@@ -74,6 +74,13 @@ export const useAuthStore = defineStore('auth', () => {
     initialized.value = true
   }
 
+  const loadCurrentUser = async () => {
+    // 个人信息以受保护的 auth/me 接口为准，同时验证当前访问令牌仍然有效。
+    const response = await apiClient.get<ApiEnvelope<UserData>>('/auth/me')
+    user.value = response.data.data
+    return response.data.data
+  }
+
   const logout = async () => {
     try {
       await authClient.post('/auth/logout')
@@ -94,6 +101,7 @@ export const useAuthStore = defineStore('auth', () => {
     refresh,
     login,
     register,
+    loadCurrentUser,
     logout,
     clearSession,
   }

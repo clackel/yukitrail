@@ -187,7 +187,10 @@ npm run web:dev
 打开：
 
 - Web：`http://localhost:5173`
+- 个人信息页：`http://localhost:5173/profile`（未登录时会先跳转登录页）
 - API：`http://localhost:8080/api/v1/health`
+
+登录成功后，可以点击首页右上角的昵称进入个人信息页。该页面会调用受保护的 `GET /api/v1/auth/me`，展示当前用户的昵称、邮箱和用户编号。
 
 开发环境中的 `/api/v1` 请求由 Vite 代理到 API，因此也可以验证完整代理链路：
 
@@ -222,7 +225,7 @@ npm run web:e2e
 npm run api:test
 ```
 
-`web:check` 会执行前端类型检查、Vitest 和生产构建；`web:e2e` 会启动预览服务器并使用 Chromium 执行关键认证流程。`api:test` 会执行后端测试，其中 MySQL 8.4 Testcontainers 集成测试依赖可用的 Docker 环境；日志显示 `Skipped` 时只能说明被跳过，不能视为集成验证通过。
+`web:check` 会执行前端类型检查、Vitest 和生产构建；`web:e2e` 会启动预览服务器并使用 Chromium 执行注册、登录失败提示、登录回跳、个人信息展示、会话恢复和退出等关键认证流程。`api:test` 会执行后端测试，其中 MySQL 8.4 Testcontainers 集成测试依赖可用的 Docker 环境；日志显示 `Skipped` 时只能说明被跳过，不能视为集成验证通过。
 
 ## 7. 停止项目
 

@@ -66,6 +66,14 @@ test('registers, restores the session after reload, and logs out', async ({ page
     })
   })
 
+  await page.route('**/api/v1/auth/me', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(success(user)),
+    })
+  })
+
   await page.route('**/api/v1/health', async (route) => {
     await route.fulfill({
       status: 200,
@@ -87,9 +95,82 @@ test('registers, restores the session after reload, and logs out', async ({ page
   await expect(page.getByRole('heading', { name: /把旅程变成\s+清晰的每一天/ })).toBeVisible()
   await expect(page.getByText('traveler@example.com')).toBeVisible()
 
+  await page.getByRole('link', { name: '查看个人信息' }).click()
+  await expect(page).toHaveURL(/\/profile$/)
+  await expect(page.getByRole('heading', { name: '个人信息' })).toBeVisible()
+  await expect(page.getByText('雪路', { exact: true }).first()).toBeVisible()
+  await expect(page.getByText('traveler@example.com')).toBeVisible()
+  await expect(page.getByText('登录会话有效')).toBeVisible()
+
   await page.reload()
   await expect(page.getByText('traveler@example.com')).toBeVisible()
 
-  await page.getByRole('button', { name: '退出' }).click()
+  await page.getByRole('button', { name: '退出登录' }).click()
   await expect(page).toHaveURL(/\/login$/)
+})
+
+test('logs in, shows a safe error, and follows the redirect to the profile', async ({ page }) => {
+  await page.route('**/api/v1/auth/refresh', async (route) => {
+    await route.fulfill({
+      status: 401,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        code: 'INVALID_REFRESH_SESSION',
+        message: '刷新会话无效或已过期，请重新登录',
+        data: null,
+        traceId: 'e2e-trace-id',
+      }),
+    })
+  })
+
+  await page.route('**/api/v1/auth/login', async (route) => {
+    const body = route.request().postDataJSON() as { email: string; password: string }
+    if (body.password !== 'correct-horse') {
+      await route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          code: 'INVALID_CREDENTIALS',
+          message: '邮箱或密码错误',
+          data: null,
+          traceId: 'e2e-trace-id',
+        }),
+      })
+      return
+    }
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(success({
+        accessToken: 'login-access-token',
+        tokenType: 'Bearer',
+        expiresIn: 900,
+        user,
+      })),
+    })
+  })
+
+  await page.route('**/api/v1/auth/me', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(success(user)),
+    })
+  })
+
+  await page.goto('/profile')
+  await expect(page).toHaveURL(/\/login\?redirect=\/profile$/)
+
+  await page.getByLabel('邮箱').fill('traveler@example.com')
+  await page.getByLabel('密码').fill('wrong-password')
+  await page.getByRole('button', { name: '登录并继续' }).click()
+  await expect(page.getByText('邮箱或密码错误')).toBeVisible()
+
+  await page.getByLabel('密码').fill('correct-horse')
+  await page.getByRole('button', { name: '登录并继续' }).click()
+
+  await expect(page).toHaveURL(/\/profile$/)
+  await expect(page.getByRole('heading', { name: '个人信息' })).toBeVisible()
+  await expect(page.getByText('traveler@example.com')).toBeVisible()
 })

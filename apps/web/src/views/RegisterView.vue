@@ -102,7 +102,6 @@ const submit = async () => {
               autocomplete="new-password"
               placeholder="至少 8 个字符"
               show-password
-              @keyup.enter="submit"
             />
           </el-form-item>
           <el-button class="auth-submit" type="primary" native-type="submit" :loading="submitting">

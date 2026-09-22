@@ -56,6 +56,20 @@ describe('authentication forms', () => {
     expect(replace).toHaveBeenCalledWith('/?from=login')
   })
 
+  it('rejects a protocol-relative redirect after login', async () => {
+    route.query = { redirect: '//outside.example' }
+    login.mockResolvedValue(undefined)
+    const wrapper = mountAuthView(LoginView)
+    const inputs = wrapper.findAll('input')
+
+    await inputs[0].setValue('traveler@example.com')
+    await inputs[1].setValue('correct-horse')
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+
+    expect(replace).toHaveBeenCalledWith('/')
+  })
+
   it('submits registration and enters the protected home page', async () => {
     register.mockResolvedValue(undefined)
     const wrapper = mountAuthView(RegisterView)

@@ -46,10 +46,10 @@ onMounted(checkApi)
         <span>YukiTrail</span>
       </a>
       <div class="user-menu">
-        <span>
+        <router-link class="user-profile-link" to="/profile" aria-label="查看个人信息">
           <strong>{{ auth.user?.nickname }}</strong>
           <small>{{ auth.user?.email }}</small>
-        </span>
+        </router-link>
         <button type="button" @click="logout">退出</button>
       </div>
     </nav>

@@ -45,7 +45,9 @@ const submit = async () => {
   try {
     await auth.login({ email: form.email.trim(), password: form.password })
     // 仅接受站内绝对路径，避免把登录成功用户跳转到外部站点。
-    const redirect = typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/')
+    const redirect = typeof route.query.redirect === 'string'
+      && route.query.redirect.startsWith('/')
+      && !route.query.redirect.startsWith('//')
       ? route.query.redirect
       : '/'
     await router.replace(redirect)
@@ -95,7 +97,6 @@ const submit = async () => {
               autocomplete="current-password"
               placeholder="输入密码"
               show-password
-              @keyup.enter="submit"
             />
           </el-form-item>
           <el-button class="auth-submit" type="primary" native-type="submit" :loading="submitting">

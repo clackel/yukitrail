@@ -76,14 +76,20 @@ a {
   align-items: center;
 }
 
-.user-menu span,
+.user-profile-link,
 .user-menu strong,
 .user-menu small {
   display: block;
 }
 
-.user-menu span {
+.user-profile-link {
+  color: inherit;
+  text-decoration: none;
   text-align: right;
+}
+
+.user-profile-link:hover strong {
+  color: #b45438;
 }
 
 .user-menu strong {
@@ -104,6 +110,193 @@ a {
   border: 1px solid #d7a08e;
   border-radius: 10px;
   cursor: pointer;
+}
+
+.profile-shell {
+  min-height: 100vh;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.profile-actions a,
+.profile-actions button {
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.profile-actions a {
+  color: #365744;
+  border: 1px solid rgb(54 87 68 / 24%);
+}
+
+.profile-actions button {
+  color: #9f4e35;
+  background: rgb(255 255 255 / 44%);
+  border: 1px solid #d7a08e;
+  cursor: pointer;
+}
+
+.profile-page {
+  width: min(820px, 100%);
+  margin: 0 auto;
+  padding: 76px 0 96px;
+}
+
+.profile-heading {
+  margin-bottom: 34px;
+}
+
+.profile-heading h1 {
+  margin-bottom: 16px;
+  font-size: clamp(44px, 7vw, 72px);
+}
+
+.profile-heading > p:last-child {
+  color: #66736c;
+  font-size: 17px;
+}
+
+.profile-page > .el-alert {
+  margin-bottom: 20px;
+}
+
+.profile-retry {
+  margin-top: 8px;
+  padding: 0;
+  color: #9f4e35;
+  background: transparent;
+  border: 0;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.profile-card {
+  overflow: hidden;
+  background: rgb(255 255 255 / 62%);
+  border: 1px solid rgb(38 51 45 / 13%);
+  border-radius: 28px;
+  box-shadow: 0 28px 70px rgb(49 70 58 / 12%);
+}
+
+.profile-identity {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 32px;
+  background: #d7e2d5;
+}
+
+.profile-avatar {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  color: #fff9ef;
+  background: #c85e40;
+  border-radius: 50% 50% 50% 18px;
+  font-size: 27px;
+  font-weight: 750;
+  place-items: center;
+  transform: rotate(-5deg);
+}
+
+.profile-identity p,
+.profile-identity h2 {
+  margin: 0;
+}
+
+.profile-identity p {
+  margin-bottom: 5px;
+  color: #668071;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.profile-identity h2 {
+  color: #244334;
+  font-size: 28px;
+}
+
+.account-status {
+  padding: 7px 11px;
+  color: #347354;
+  background: rgb(255 255 255 / 58%);
+  border: 1px solid rgb(52 115 84 / 20%);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-details {
+  margin: 0;
+  padding: 8px 32px;
+}
+
+.profile-details > div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid rgb(38 51 45 / 11%);
+}
+
+.profile-details > div:last-child {
+  border-bottom: 0;
+}
+
+.profile-details dt {
+  color: #75827b;
+  font-size: 13px;
+}
+
+.profile-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #263a31;
+  font-weight: 700;
+}
+
+.profile-session {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  padding: 20px 32px;
+  background: rgb(215 226 213 / 36%);
+  border-top: 1px solid rgb(38 51 45 / 10%);
+}
+
+.profile-session .status-dot {
+  flex: 0 0 auto;
+  background: #4c9473;
+  box-shadow: 0 0 0 5px rgb(76 148 115 / 14%);
+}
+
+.profile-session strong,
+.profile-session small {
+  display: block;
+}
+
+.profile-session strong {
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+.profile-session small {
+  color: #748078;
+  font-size: 12px;
+}
+
+.profile-loading {
+  padding: 32px;
+  color: #66736c;
+  text-align: center;
 }
 
 .auth-shell {
@@ -557,7 +750,7 @@ h1 {
     display: none;
   }
 
-  .user-menu span {
+  .user-profile-link {
     max-width: 100px;
   }
 
@@ -609,6 +802,34 @@ h1 {
 
   .auth-panel {
     padding: 48px 20px 64px;
+  }
+
+  .profile-actions a {
+    display: none;
+  }
+
+  .profile-page {
+    padding: 52px 0 72px;
+  }
+
+  .profile-identity {
+    grid-template-columns: auto 1fr;
+    padding: 24px 20px;
+  }
+
+  .account-status {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .profile-details,
+  .profile-session {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .profile-details > div {
+    grid-template-columns: 90px 1fr;
   }
 }
 
